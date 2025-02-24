@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:server_scanner/app/screen/search_server_view.dart';
 
 class SavedServersPage extends StatefulWidget {
   const SavedServersPage({super.key});
@@ -10,6 +12,20 @@ class SavedServersPage extends StatefulWidget {
 class _SavedServersPageState extends State<SavedServersPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return NavigationView(
+      content: ValueListenableBuilder(
+        valueListenable: Hive.box('servers').listenable(),
+        builder: (context, value, child) {
+          List serverData = value.toMap().values.toList();
+
+          return SearchServerView(
+            serverData: serverData,
+            initialLimit: 10,
+            query: {},
+            isSavedServerView: true,
+          );
+        },
+      ),
+    );
   }
 }

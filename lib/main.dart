@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:server_scanner/app/screen/home.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:window_size/window_size.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  setWindowMinSize(const Size(1200, 750));
   await Hive.initFlutter();
 
   await Hive.openBox('servers');

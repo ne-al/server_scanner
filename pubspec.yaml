@@ -48,6 +48,7 @@ dependencies:
   toastification: ^3.0.0
   timeago: ^3.7.0
   iconsax: ^0.0.8
+  window_size: ^0.1.0
 
 dev_dependencies:
   flutter_test:

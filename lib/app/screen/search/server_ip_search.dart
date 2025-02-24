@@ -27,16 +27,16 @@ class _ServerIpSearchPageState extends State<ServerIpSearchPage> {
   }
 
   Future<void> lookup() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    // serverData = await Api().getServer(
-    //   ip: ipController.text.trim(),
-    //   port: int.parse(portController.text.trim()),
-    // );
-
     if (ipController.text.trim().isEmpty) return;
+
+    if (ipController.text.trim().contains(":")) {
+      final ip = ipController.text.trim().split(":")[0];
+      final port = ipController.text.trim().split(":")[1];
+
+      ipController.text = ip;
+      portController.text = port;
+    }
+
     if (portController.text.trim().isEmpty) {
       portController.text = '25565';
     }
@@ -61,7 +61,11 @@ class _ServerIpSearchPageState extends State<ServerIpSearchPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return NavigationView(
-          appBar: NavigationAppBar(title: const Text('Server IP Search')),
+          appBar: NavigationAppBar(
+            automaticallyImplyLeading: false,
+
+            title: const Text('Server IP Search'),
+          ),
           content: SafeArea(
             child: Row(
               children: [

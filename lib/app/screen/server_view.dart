@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:server_scanner/app/utils/toastifications.dart';
 import 'package:server_scanner/core/api/api.dart';
+import 'package:server_scanner/core/service/save_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ServerView extends StatefulWidget {
@@ -32,6 +33,7 @@ class _ServerViewState extends State<ServerView> {
   late String isCracked;
   late String isWhiteListed;
   late String countryName;
+  bool isSaved = false;
 
   @override
   void initState() {
@@ -67,6 +69,7 @@ class _ServerViewState extends State<ServerView> {
         sortedPlayers =
             players.where((player) {
               return player["id"] != "00000000-0000-0000-0000-000000000000" &&
+                  player["id"] != "00000000-0000-0000-0000-000000000009" &&
                   !player["name"].contains("§");
             }).toList();
 
@@ -88,6 +91,10 @@ class _ServerViewState extends State<ServerView> {
               : serverData["whitelist"]
               ? "Yes"
               : "No";
+
+      isSaved = SaveService().isServerSaved(
+        "${serverData["ip"]}:${serverData["port"]}",
+      );
     }
 
     setState(() {
@@ -138,14 +145,52 @@ class _ServerViewState extends State<ServerView> {
                                     );
                                   },
                                   builder:
-                                      (p0, state) => Text(
-                                        "Server IP: $ip",
-                                        style: GoogleFonts.inter(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.3,
-                                          wordSpacing: 1,
-                                        ),
+                                      (p0, state) => Row(
+                                        children: [
+                                          Text(
+                                            "Server IP: $ip",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0.3,
+                                              wordSpacing: 1,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          IconButton(
+                                            icon:
+                                                isSaved
+                                                    ? Icon(
+                                                      Iconsax.heart5,
+                                                      size: 24,
+                                                      color: Colors.red,
+                                                    )
+                                                    : Icon(
+                                                      Iconsax.heart,
+                                                      size: 24,
+                                                    ),
+                                            onPressed: () async {
+                                              if (isSaved) {
+                                                SaveService().removeServer(
+                                                  serverId:
+                                                      "${serverData["ip"]}:${serverData["port"]}",
+                                                  context: context,
+                                                );
+                                                setState(() {
+                                                  isSaved = false;
+                                                });
+                                              } else {
+                                                SaveService().saveServer(
+                                                  serverData: serverData,
+                                                  context: context,
+                                                );
+                                                setState(() {
+                                                  isSaved = true;
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ],
                                       ),
                                 ),
                                 Text(

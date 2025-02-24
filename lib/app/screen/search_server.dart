@@ -158,6 +158,7 @@ class _SearchServerPageState extends State<SearchServerPage> {
         return NavigationView(
           appBar: NavigationAppBar(
             title: Text('Search Server', style: GoogleFonts.inter()),
+            automaticallyImplyLeading: false,
           ),
           content: SafeArea(
             child: Center(

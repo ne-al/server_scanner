@@ -9,15 +9,15 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class SearchServerView extends StatefulWidget {
   final List serverData;
-  // final int totalServerCount;
   final int initialLimit;
   final Map<String, dynamic> query;
+  final bool isSavedServerView;
   const SearchServerView({
     super.key,
     required this.serverData,
-    // required this.totalServerCount,
     required this.initialLimit,
     required this.query,
+    this.isSavedServerView = false,
   });
 
   @override
@@ -47,7 +47,7 @@ class _SearchServerViewState extends State<SearchServerView> {
     serverData = widget.serverData;
     maxResultLimit = widget.initialLimit;
 
-    createPagination();
+    if (!widget.isSavedServerView) createPagination();
   }
 
   Future<void> createPagination() async {
@@ -143,7 +143,7 @@ class _SearchServerViewState extends State<SearchServerView> {
             child: Row(
               children: [
                 Flexible(
-                  flex: 6,
+                  flex: 5,
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     spacing: 16,
@@ -156,8 +156,16 @@ class _SearchServerViewState extends State<SearchServerView> {
                           children: [
                             isInitializing
                                 ? ProgressBar()
-                                : Text(
+                                : !widget.isSavedServerView
+                                ? Text(
                                   '${totalShowedServerCount - widget.initialLimit + 1}-${totalShowedServerCount > serverCount ? serverCount : totalShowedServerCount} of $serverCount servers found',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                                : Text(
+                                  "SAVED SERVERS",
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -174,8 +182,7 @@ class _SearchServerViewState extends State<SearchServerView> {
                                     shrinkWrap: true,
                                     itemCount: serverData.length,
                                     itemBuilder: (context, index) {
-                                      Map<String, dynamic> data =
-                                          widget.serverData[index];
+                                      Map data = widget.serverData[index];
 
                                       String serverIp =
                                           data["port"] == 25565
@@ -265,32 +272,40 @@ class _SearchServerViewState extends State<SearchServerView> {
                       SizedBox(
                         height: constraints.maxHeight * 0.06,
 
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            children: [
-                              FilledButton(
-                                onPressed:
-                                    isLoading
-                                        ? null
-                                        : () async => showPreviousPage(),
-                                child: const Text('Previous Page'),
-                              ),
-                              Expanded(
-                                child: Center(
-                                  child: Text("$currentPage/$totalPages"),
+                        child:
+                            widget.isSavedServerView
+                                ? SizedBox.shrink()
+                                : Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      FilledButton(
+                                        onPressed:
+                                            isLoading
+                                                ? null
+                                                : () async =>
+                                                    showPreviousPage(),
+                                        child: const Text('Previous Page'),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: Text(
+                                            "$currentPage/$totalPages",
+                                          ),
+                                        ),
+                                      ),
+                                      FilledButton(
+                                        onPressed:
+                                            isLoading
+                                                ? null
+                                                : () async => showNextPage(),
+                                        child: const Text('Next Page'),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              FilledButton(
-                                onPressed:
-                                    isLoading
-                                        ? null
-                                        : () async => showNextPage(),
-                                child: const Text('Next Page'),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                     ],
                   ),
