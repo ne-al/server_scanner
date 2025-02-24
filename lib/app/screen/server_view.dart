@@ -74,10 +74,20 @@ class _ServerViewState extends State<ServerView> {
         sortedPlayers.sort((a, b) => b["lastSeen"].compareTo(a["lastSeen"]));
       }
 
-      versionName = serverData["version"]["name"];
-      countryName = serverData["geo"]["country"];
-      isCracked = serverData["cracked"] ? "Yes" : "No";
-      isWhiteListed = serverData["whitelist"] ? "Yes" : "No";
+      versionName = serverData["version"]?["name"] ?? "N/A";
+      countryName = serverData["geo"]?["country"] ?? "N/A";
+      isCracked =
+          serverData["cracked"] == null
+              ? "N/A"
+              : serverData["cracked"]
+              ? "Yes"
+              : "No";
+      isWhiteListed =
+          serverData["whitelist"] == null
+              ? "N/A"
+              : serverData["whitelist"]
+              ? "Yes"
+              : "No";
     }
 
     setState(() {
@@ -174,15 +184,17 @@ class _ServerViewState extends State<ServerView> {
                                     wordSpacing: 1,
                                   ),
                                 ),
-                                Text(
-                                  "Whitelist: $isWhiteListed",
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.3,
-                                    wordSpacing: 1,
+
+                                if (isWhiteListed != "N/A")
+                                  Text(
+                                    "Whitelist: $isWhiteListed",
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.3,
+                                      wordSpacing: 1,
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -238,9 +250,13 @@ class _ServerViewState extends State<ServerView> {
                                                   letterSpacing: 0.3,
                                                   wordSpacing: 1,
                                                 ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                               subtitle: Text(
                                                 sortedPlayers[index]["id"],
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                               trailing: Text(lastSeen),
                                               onPressed: () async {

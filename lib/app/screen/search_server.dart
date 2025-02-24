@@ -6,6 +6,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:server_scanner/app/screen/search_server_view.dart';
+import 'package:server_scanner/app/utils/custom_textfield.dart';
 import 'package:server_scanner/app/utils/toastifications.dart';
 import 'package:server_scanner/core/api/api.dart';
 
@@ -287,17 +288,6 @@ class _SearchServerPageState extends State<SearchServerPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget customTextField({
-    required TextEditingController controller,
-    required String hintText,
-  }) {
-    return TextBox(
-      controller: controller,
-      placeholder: hintText,
-      style: GoogleFonts.inter(),
     );
   }
 }

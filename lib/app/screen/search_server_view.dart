@@ -182,20 +182,28 @@ class _SearchServerViewState extends State<SearchServerView> {
                                               ? data["ip"]
                                               : "${data["ip"]}:${data["port"]}";
                                       String isCracked =
-                                          data["cracked"] ? "Yes" : "No";
+                                          data["cracked"] == null
+                                              ? "N/A"
+                                              : data["cracked"]
+                                              ? "Yes"
+                                              : "No";
                                       String isWhitelist =
-                                          data["whitelist"] ? "Yes" : "No";
+                                          data["whitelist"] == null
+                                              ? "N/A"
+                                              : data["whitelist"]
+                                              ? "Yes"
+                                              : "No";
                                       String serverVersion =
-                                          data["version"]["name"];
+                                          data["version"]["name"] ?? "N/A";
                                       String lastSeen = timeago.format(
                                         DateTime.fromMillisecondsSinceEpoch(
                                           data["lastSeen"] * 1000,
                                         ),
                                       );
                                       String playerCount =
-                                          '${data["players"]["online"]}/${data["players"]["max"]}';
+                                          '${data["players"]["online"] ?? 0}/${data["players"]["max"] ?? 0}';
                                       String countryName =
-                                          data["geo"]["country"];
+                                          data["geo"]?["country"] ?? "N/A";
                                       return ListTile(
                                         tileColor:
                                             selectedIndex != null &&
@@ -224,6 +232,8 @@ class _SearchServerViewState extends State<SearchServerView> {
                                             Text(
                                               serverIp,
                                               style: GoogleFonts.inter(),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                             Spacer(),
                                             Text(
@@ -232,6 +242,8 @@ class _SearchServerViewState extends State<SearchServerView> {
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w300,
                                               ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
                                         ),
@@ -240,6 +252,8 @@ class _SearchServerViewState extends State<SearchServerView> {
                                           style: GoogleFonts.inter(
                                             fontWeight: FontWeight.w300,
                                           ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       );
                                     },
